@@ -11,7 +11,7 @@ export function TopBar() {
   return (
     <div className="topbar">
       <div className="row" style={{ gap: 10 }}>
-        <div className="brand">SafeWatch SG</div>
+        <div className="brand">SafeWatch</div>
         <span className="badge">{role ?? "guest"}</span>
       </div>
 

@@ -1,0 +1,16 @@
+[
+  {
+    "camera_id": "cam_001",
+    "stream_url": "rtsp://username:password@192.168.1.10:554/stream1",
+    "latitude": 1.3521,
+    "longitude": 103.8198,
+    "active": true
+  },
+  {
+    "camera_id": "cam_002",
+    "stream_url": "rtsp://username:password@192.168.1.11:554/stream1",
+    "latitude": 1.355,
+    "longitude": 103.82,
+    "active": true
+  }
+]

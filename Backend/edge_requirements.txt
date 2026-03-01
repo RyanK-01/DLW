@@ -1,0 +1,11 @@
+# Edge inference worker dependencies (separate from backend API service)
+ultralytics
+opencv-python-headless
+numpy
+requests
+python-dotenv
+
+# MobileNetV2 violence classifier runtime
+tensorflow
+tf-keras
+onnxruntime

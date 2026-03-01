@@ -1,2 +1,9 @@
 fastapi
-uvicorn
+uvicorn[standard]
+firebase-admin
+pydantic
+python-dotenv
+websockets
+python-socketio
+twilio
+geofire-python

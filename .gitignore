@@ -1,0 +1,5 @@
+.github/copilot-instructions.md
+/venv
+Backend/scripts/seed_and_test_flow.py
+Backend/scripts/check_firebase.py
+Backend/serviceAccountKey.json

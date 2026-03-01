@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import datetime
 
 import firebase_admin
@@ -7,9 +8,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Initialize Firebase Admin SDK once
-cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "./serviceAccountKey.json")
-cred = credentials.Certificate(cred_path)
+# On Vercel: read credentials from FIREBASE_CREDENTIALS_JSON env var (full JSON string)
+# Locally: fall back to serviceAccountKey.json file
+_creds_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
+if _creds_json:
+    cred = credentials.Certificate(json.loads(_creds_json))
+else:
+    cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "./serviceAccountKey.json")
+    cred = credentials.Certificate(cred_path)
+
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()

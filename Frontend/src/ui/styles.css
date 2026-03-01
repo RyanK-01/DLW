@@ -1,6 +1,6 @@
 
 :root { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-body { margin: 0; background: #fafafa; color: #111; }
+body { margin: 0; background: linear-gradient(to right, #0A2547 0%, #00D4E8 100%); min-height: 100vh; color: #111; }
 a { color: inherit; text-decoration: none; }
 
 .container { max-width: 1100px; margin: 0 auto; padding: 20px; }

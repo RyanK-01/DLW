@@ -10,19 +10,13 @@ export function TopBar() {
 
   return (
     <div className="topbar">
-      <div className="row" style={{ gap: 10 }}>
-        <div className="brand">SafeWatch SG</div>
-        <span className="badge">{role ?? "guest"}</span>
-      </div>
-
-      <div className="row">
-        <Link className="badge" to="/public">Public</Link>
-        <Link className="badge" to="/responder">Responder</Link>
-        {!user ? (
-          <Link className="button secondary" to="/login">Login</Link>
-        ) : (
-          <button className="button secondary" onClick={() => signOut(auth)}>Logout</button>
-        )}
+      <div className="row" style={{ gap: 12 }}>
+        <svg width="36" height="40" viewBox="0 0 36 40" style={{ flexShrink: 0 }}>
+          <path d="M18 2 L6 8 L6 16 Q6 25 18 35 Q30 25 30 16 L30 8 Z" fill="none" stroke="white" strokeWidth="2.5" strokeLinejoin="round"/>
+          <path d="M18 2 L6 8 L6 16 Q6 25 18 35 Q18 25 18 16 L18 8 Z" fill="#1E3A5F" />
+          <path d="M18 2 L30 8 L30 16 Q30 25 18 35 Q18 25 18 16 L18 8 Z" fill="#A8E6F0" />
+        </svg>
+        <div className="brand" style={{ fontSize: 20, margin: 0 }}>SafeWatch SG</div>
       </div>
     </div>
   );

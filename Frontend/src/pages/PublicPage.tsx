@@ -30,6 +30,7 @@ export function PublicPage() {
   const [advs, setAdvs] = useState<Advisory[]>([]);
   const [me, setMe] = useState<{ lat: number; lng: number } | null>(null);
   const [radiusM, setRadiusM] = useState(1500);
+  const [filterDate, setFilterDate] = useState<string>("");
 
   useEffect(() => {
     const q1 = query(collection(db, "advisories"), where("published", "==", true));
@@ -55,50 +56,61 @@ export function PublicPage() {
   }, [me]);
 
   const nearby = useMemo(() => {
-    if (!me) return advs;
-    return advs.filter((a) => haversineM(me.lat, me.lng, a.lat, a.lng) <= radiusM);
-  }, [advs, me, radiusM]);
+    let filtered = advs;
+    
+    // Filter by date if selected
+    if (filterDate) {
+      const selectedDate = new Date(filterDate);
+      filtered = filtered.filter((a) => {
+        const advDate = new Date(a.createdAt);
+        return advDate.toDateString() === selectedDate.toDateString();
+      });
+    }
+    
+    // Filter by proximity if location available
+    if (me) {
+      filtered = filtered.filter((a) => haversineM(me.lat, me.lng, a.lat, a.lng) <= radiusM);
+    }
+    
+    return filtered;
+  }, [advs, me, radiusM, filterDate]);
 
   return (
     <>
       <TopBar />
       <div className="container">
-        <div className="grid2">
+        <div className="grid2" style={{ gridTemplateColumns: "1fr 2.5fr" }}>
           <div className="card">
-            <h2 style={{ marginTop: 0 }}>Public Advisories</h2>
-            <div className="small">Only confirmed & published advisories appear here.</div>
+            <h2 style={{ marginTop: 0 }}>Completed Cases</h2>
             <hr />
 
-            <div className="row" style={{ justifyContent: "space-between" }}>
-              <div className="col" style={{ flex: 1 }}>
-                <label className="small">Nearby filter radius (m)</label>
-                <input className="input" type="number" value={radiusM} onChange={(e) => setRadiusM(Number(e.target.value))} />
-              </div>
-              <div className="col" style={{ flex: 1 }}>
-                <div className="small">My location</div>
-                <div className="badge">{me ? `${me.lat.toFixed(5)}, ${me.lng.toFixed(5)}` : "Not shared"}</div>
-              </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: 180 }}>
+              <label className="small" style={{ fontWeight: 500 }}>Filter by date</label>
+              <input 
+                className="input" 
+                type="date" 
+                value={filterDate} 
+                onChange={(e) => setFilterDate(e.target.value)} 
+              />
             </div>
 
             <hr />
 
             <div className="col">
-              {nearby.length === 0 && <div className="small">No advisories near you.</div>}
+              {nearby.length === 0 && <div className="small">No cases found.</div>}
               {nearby.map((a) => (
                 <div key={a.id} className="card" style={{ padding: 12 }}>
-                  <div className="row" style={{ justifyContent: "space-between" }}>
+                  <div style={{ marginBottom: 6 }}>
                     <b>{a.title}</b>
-                    <span className="badge">{a.radiusM}m</span>
                   </div>
-                  <div className="small" style={{ marginTop: 6 }}>{a.message}</div>
-                  <div className="small" style={{ marginTop: 6, opacity: 0.65 }}>Incident: {a.incidentId}</div>
+                  <div className="small">{a.message}</div>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="card">
-            <h2 style={{ marginTop: 0 }}>Map (OpenStreetMap)</h2>
+            <h2 style={{ marginTop: 0 }}>Cases Near Me</h2>
             <div className="mapWrap">
               <MapContainer center={center} zoom={12} style={{ height: "100%", width: "100%" }}>
                 <TileLayer

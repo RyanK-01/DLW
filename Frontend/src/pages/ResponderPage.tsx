@@ -1,4 +1,8 @@
 
+//Live incident dashboard
+//Shows all flagged incidents
+//Lets responder choose which one to inspect
+
 import React, { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";

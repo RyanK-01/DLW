@@ -1,4 +1,9 @@
 
+//Shows detailed info for one incident
+//Shows CCTV / latest frame
+//Allows confirmation / false alarm
+//Publishes advisory to public
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { doc, onSnapshot, updateDoc, serverTimestamp, addDoc, collection } from "firebase/firestore";

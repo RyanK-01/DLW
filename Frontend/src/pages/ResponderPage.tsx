@@ -36,6 +36,7 @@ export function ResponderPage() {
   return (
     <>
       <TopBar />
+      <div style={{ minHeight: "calc(100vh - 57px)", background: "linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0e7490 100%)" }}>
       <div className="container">
         <div className="grid2">
           <div className="card">
@@ -78,6 +79,7 @@ export function ResponderPage() {
             </Link>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

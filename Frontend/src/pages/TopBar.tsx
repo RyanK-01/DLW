@@ -4,6 +4,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useAuth } from "../auth/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { ProfileModal } from "../auth/ProfileModal";
 
 const box: React.CSSProperties = {
   padding: "7px 14px",
@@ -23,6 +24,11 @@ export function TopBar() {
   const { user, role } = useAuth();
   const nav = useNavigate();
   const [accessErr, setAccessErr] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+
+  const roleLabel = role
+    ? role.charAt(0).toUpperCase() + role.slice(1)
+    : "Guest";
 
   function handleResponder() {
     if (role === "responder" || role === "admin") {
@@ -39,7 +45,13 @@ export function TopBar() {
       <div className="topbar">
         <div className="row" style={{ gap: 8 }}>
           <div className="brand">SafeWatch</div>
-          <span style={box}>{role ?? "guest"}</span>
+          <button
+            style={box}
+            onClick={() => user && setShowProfile(true)}
+            title="Edit profile"
+          >
+            {roleLabel}
+          </button>
         </div>
 
         <div className="row" style={{ gap: 8 }}>
@@ -56,6 +68,8 @@ export function TopBar() {
           )}
         </div>
       </div>
+
+      {showProfile && <ProfileModal onClose={() => setShowProfile(false)} />}
 
       {accessErr && (
         <div style={{

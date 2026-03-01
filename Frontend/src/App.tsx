@@ -3,8 +3,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./ui/styles.css";
 import { AuthProvider } from "./auth/AuthContext";
-import { LoginPage } from "./pages/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
+import { LandingPage } from "./pages/LandingPage";
 import { PublicPage } from "./pages/PublicPage";
 import { ResponderPage } from "./pages/ResponderPage";
 import { IncidentPage } from "./pages/IncidentPage";
@@ -15,8 +14,8 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LandingPage />} />
+          <Route path="/register" element={<Navigate to="/login" replace />} />
           <Route path="/public" element={<PublicPage />} />
 
           <Route
@@ -37,8 +36,8 @@ export default function App() {
             }
           />
 
-          <Route path="/" element={<Navigate to="/public" replace />} />
-          <Route path="*" element={<Navigate to="/public" replace />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

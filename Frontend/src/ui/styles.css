@@ -10,7 +10,7 @@ a { color: inherit; text-decoration: none; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
 
-.input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; }
+.input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; box-sizing: border-box; }
 .button { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; background: #111; color: white; cursor: pointer; }
 .button.secondary { background: white; color: #111; }
 .button.danger { background: #b00020; border-color: #b00020; }
@@ -22,3 +22,131 @@ a { color: inherit; text-decoration: none; }
 .mapWrap { height: 520px; border: 1px solid #e6e6e6; border-radius: 14px; overflow: hidden; }
 .small { font-size: 12px; opacity: 0.75; }
 hr { border: none; border-top: 1px solid #eee; margin: 10px 0; }
+
+/* ── Landing page ── */
+.landing-root { min-height: 100vh; display: flex; flex-direction: column; }
+
+.landing-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0e7490 100%);
+  padding: 80px 20px 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.landing-hero-inner { max-width: 600px; }
+
+.landing-logo { font-size: 56px; margin-bottom: 16px; }
+
+.landing-title {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0 0 14px;
+  line-height: 1.15;
+}
+
+.landing-sub {
+  font-size: 16px;
+  opacity: 0.75;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.landing-card-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px 60px;
+  margin-top: -48px;
+}
+
+.landing-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+  padding: 32px 36px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.landing-tabs {
+  display: flex;
+  border-bottom: 2px solid #f0f0f0;
+  gap: 0;
+}
+
+.landing-tab {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 15px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.landing-tab.active {
+  color: #0e7490;
+  border-bottom-color: #0e7490;
+}
+
+.landing-label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+}
+
+.landing-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #1e3a5f, #0e7490);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  margin-top: 4px;
+}
+
+.landing-btn:hover:not(:disabled) { opacity: 0.9; }
+.landing-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.landing-err {
+  color: #b00020;
+  font-size: 13px;
+  background: #fff0f2;
+  border: 1px solid #ffc0cb;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.landing-switch {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+}
+
+.landing-link {
+  background: none;
+  border: none;
+  color: #0e7490;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+/* Phone input row */
+.phone-row { display: flex; gap: 8px; }
+.phone-region { width: 105px; flex-shrink: 0; }
+.phone-digits { flex: 1; }

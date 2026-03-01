@@ -22,7 +22,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
-def create_user_document(uid: str, username: str, phone: str) -> bool:
+def create_user_document(uid: str, username: str, phone: str, email: str) -> bool:
     """
     Writes a new user document to users/{uid}.
     Returns False if the user already exists, True if created.
@@ -39,11 +39,30 @@ def create_user_document(uid: str, username: str, phone: str) -> bool:
     user_ref.set({
         "username": username,
         "phone": phone,
+        "email": email,
         "role": role,
         "createdAt": datetime.utcnow(),
     })
 
     return True
+
+
+def get_email_by_identifier(identifier: str) -> str | None:
+    """
+    Looks up a user's email by their username or phone number.
+    Returns the email string, or None if no match found.
+    """
+    # Try username first
+    by_username = db.collection("users").where("username", "==", identifier).limit(1).get()
+    if len(by_username) > 0:
+        return by_username[0].to_dict().get("email")
+
+    # Try phone number
+    by_phone = db.collection("users").where("phone", "==", identifier).limit(1).get()
+    if len(by_phone) > 0:
+        return by_phone[0].to_dict().get("email")
+
+    return None
 
 
 def get_user_role(uid: str) -> str | None:

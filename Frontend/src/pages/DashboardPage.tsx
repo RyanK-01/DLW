@@ -42,7 +42,7 @@ function chip(status: string) {
 
 export function DashboardPage() {
   const { role } = useAuth();
-  const isResponder = role === "responder" || role === "admin";
+  const isResponder = role === "responder";
 
   // ── Shared: advisories & location ──
   const [advs, setAdvs] = useState<Advisory[]>([]);

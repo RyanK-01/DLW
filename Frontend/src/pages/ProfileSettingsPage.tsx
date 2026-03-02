@@ -6,10 +6,11 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase";
 
 export function ProfileSettingsPage() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const nav = useNavigate();
   const [name, setName] = useState("");
   const [photoURL, setPhotoURL] = useState("");
+  const [phone, setPhone] = useState("");
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -22,6 +23,7 @@ export function ProfileSettingsPage() {
         const data = userDoc.data();
         setName(data.username || "");
         setPhotoURL(data.photoURL || "");
+        setPhone(data.phone || "");
       }
     };
     loadUserData();
@@ -49,9 +51,15 @@ export function ProfileSettingsPage() {
     if (!user) return;
     setSaving(true);
     try {
+      // Normalise phone: add +65 if it's a bare SG number
+      let normPhone = phone.trim().replace(/\s|-/g, "");
+      if (normPhone && !normPhone.startsWith("+")) {
+        normPhone = `+65${normPhone.replace(/^0+/, "")}`;
+      }
       await updateDoc(doc(db, "users", user.uid), {
         username: name,
         photoURL: photoURL,
+        ...(role === "responder" ? { phone: normPhone } : {}),
       });
       setMessage("Profile updated successfully!");
       setTimeout(() => nav("/public"), 1500);
@@ -103,6 +111,29 @@ export function ProfileSettingsPage() {
                 placeholder="Your name"
               />
             </div>
+
+            {role === "responder" && (
+              <div className="col">
+                <label className="small" style={{ fontWeight: 600 }}>
+                  Mobile Number
+                  <span style={{ fontWeight: 400, color: "#888", marginLeft: 6 }}>
+                    (used for incident SMS alerts)
+                  </span>
+                </label>
+                <input
+                  className="input"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="e.g. 91234567 or +6591234567"
+                />
+                {phone && !phone.startsWith("+") && (
+                  <span className="small" style={{ color: "#0e7490", marginTop: 2 }}>
+                    +65 will be added automatically
+                  </span>
+                )}
+              </div>
+            )}
 
             {message && (
               <div

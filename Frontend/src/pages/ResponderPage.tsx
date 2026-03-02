@@ -10,6 +10,12 @@ import type { Incident } from "../types/incident";
 import { TopBar } from "./TopBar";
 import { Link } from "react-router-dom";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? "http://127.0.0.1:8000";
+
+const ACTIVE_STATUSES = new Set(["NEW", "TRIAGED", "CONFIRMED"]);
+
+type PingState = "idle" | "sending" | "sent" | "error";
+
 function chip(status: string) {
   const style: React.CSSProperties = { padding: "4px 10px", border: "1px solid #ddd", borderRadius: 999, fontSize: 12 };
   if (status === "CONFIRMED") return <span style={{ ...style, background: "#e8fff1", borderColor: "#bde8cc" }}>CONFIRMED</span>;
@@ -21,6 +27,7 @@ function chip(status: string) {
 export function ResponderPage() {
   const [incs, setIncs] = useState<Incident[]>([]);
   const [minRisk, setMinRisk] = useState(0);
+  const [pingStates, setPingStates] = useState<Record<string, PingState>>({});
 
   useEffect(() => {
     const q1 = query(collection(db, "incidents"), orderBy("updatedAt", "desc"));
@@ -32,6 +39,42 @@ export function ResponderPage() {
   }, []);
 
   const filtered = useMemo(() => incs.filter((i) => (i.riskScore ?? 0) >= minRisk), [incs, minRisk]);
+
+  async function handlePing(e: React.MouseEvent, incidentId: string) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setPingStates((prev) => ({ ...prev, [incidentId]: "sending" }));
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/incidents/${incidentId}/ping`, {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setPingStates((prev) => ({ ...prev, [incidentId]: "sent" }));
+      // Reset back to idle after 3 s
+      setTimeout(() => setPingStates((prev) => ({ ...prev, [incidentId]: "idle" })), 3000);
+    } catch {
+      setPingStates((prev) => ({ ...prev, [incidentId]: "error" }));
+      setTimeout(() => setPingStates((prev) => ({ ...prev, [incidentId]: "idle" })), 3000);
+    }
+  }
+
+  function PingButton({ incident }: { incident: Incident }) {
+    if (!ACTIVE_STATUSES.has(incident.status)) return null;
+    const state = pingStates[incident.id] ?? "idle";
+    return (
+      <button
+        className={`ping-btn${state === "sent" ? " ping-btn--sent" : ""}${state === "error" ? " ping-btn--error" : ""}`}
+        disabled={state === "sending"}
+        onClick={(e) => handlePing(e, incident.id)}
+      >
+        {state === "idle" && "🔔 Ping"}
+        {state === "sending" && "Sending…"}
+        {state === "sent" && "✓ Sent"}
+        {state === "error" && "✗ Failed"}
+      </button>
+    );
+  }
 
   return (
     <>
@@ -62,6 +105,9 @@ export function ResponderPage() {
                   </div>
                   <div className="small" style={{ marginTop: 8, opacity: 0.7 }}>
                     {i.lat.toFixed(5)}, {i.lng.toFixed(5)}
+                  </div>
+                  <div style={{ marginTop: 10 }}>
+                    <PingButton incident={i} />
                   </div>
                 </Link>
               ))}

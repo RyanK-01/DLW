@@ -23,6 +23,7 @@ export function LandingPage() {
   const [name, setName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPw, setSignupPw] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
   const [signupErr, setSignupErr] = useState("");
   const [signupLoading, setSignupLoading] = useState(false);
 
@@ -57,6 +58,11 @@ export function LandingPage() {
     setSignupLoading(true);
     const email = signupEmail.trim().toLowerCase();
     const assignedRole = email.endsWith(RESPONDER_DOMAIN) ? "responder" : "public";
+    // Normalise phone: prepend +65 if no country code
+    let normPhone = signupPhone.trim().replace(/\s|-/g, "");
+    if (normPhone && !normPhone.startsWith("+")) {
+      normPhone = `+65${normPhone.replace(/^0+/, "")}`;
+    }
     try {
       const credential = await createUserWithEmailAndPassword(auth, email, signupPw);
       const uid = credential.user.uid;
@@ -65,6 +71,7 @@ export function LandingPage() {
         username: name,
         email,
         role: assignedRole,
+        phone: normPhone,
         createdAt: serverTimestamp(),
       });
 
@@ -192,6 +199,23 @@ export function LandingPage() {
                 {signupEmail.toLowerCase().endsWith("@staff.safewatch.sg") && (
                   <span className="small" style={{ color: "#2e7d32", marginTop: 4 }}>
                     ✓ Staff email — responder access will be granted.
+                  </span>
+                )}
+              </label>
+              <label className="landing-label">
+                Mobile number
+                <input
+                  className="input"
+                  type="tel"
+                  placeholder="e.g. 91234567"
+                  value={signupPhone}
+                  onChange={(e) => setSignupPhone(e.target.value)}
+                  required
+                  autoComplete="tel"
+                />
+                {signupPhone && !signupPhone.startsWith("+") && (
+                  <span className="small" style={{ color: "#0e7490", marginTop: 2 }}>
+                    +65 will be added automatically
                   </span>
                 )}
               </label>

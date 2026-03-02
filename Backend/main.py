@@ -6,6 +6,7 @@ from pydantic import BaseModel, ValidationError
 
 from firebase import create_user_document, db, get_user_role
 from models import CameraHeartbeat, IncidentAlert
+from notifications import notify_incident
 
 app = FastAPI()
 
@@ -95,6 +96,50 @@ def ingest_incident_alert(payload: dict):
     doc_ref.set(incident_doc)
 
     return {"message": "Incident alert ingested", "id": doc_ref.id}
+
+
+@app.post("/api/incidents/{incident_id}/ping", status_code=200)
+def ping_incident(incident_id: str):
+    """
+    Sends an SMS alert to TEST_USER_PHONE and any responders with a
+    phone number saved in their Firestore user document.
+    Also stamps notifiedAt on the incident doc.
+    """
+    incident_ref = db.collection("incidents").document(incident_id)
+    incident_snap = incident_ref.get()
+    if not incident_snap.exists:
+        raise HTTPException(status_code=404, detail="Incident not found.")
+
+    inc = incident_snap.to_dict()
+
+    # Collect phone numbers from ALL users who have a phone saved
+    all_phones: list[str] = []
+    users_snap = db.collection("users").stream()
+    for user_doc in users_snap:
+        user_data = user_doc.to_dict() or {}
+        phone = user_data.get("phone", "").strip()
+        if phone:
+            all_phones.append(phone)
+
+    if not all_phones:
+        return {"notified_count": 0, "numbers_pinged": [], "detail": "No phone numbers found in Firebase."}
+
+    notified = notify_incident(
+        incident_id=incident_id,
+        category=str(inc.get("category", inc.get("incident_type", "incident"))),
+        risk_score=float(inc.get("riskScore", 0.0)),
+        lat=float(inc.get("lat", 0.0)),
+        lng=float(inc.get("lng", 0.0)),
+        phone_numbers=all_phones,
+    )
+
+    # Stamp the incident with notification time
+    incident_ref.update({
+        "notifiedAt": datetime.now(timezone.utc),
+        "notifiedCount": len(notified),
+    })
+
+    return {"notified_count": len(notified), "numbers_pinged": notified}
 
 
 @app.post("/api/edge/cameras/{camera_id}/heartbeat", status_code=200)

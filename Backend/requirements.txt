@@ -2,3 +2,5 @@ fastapi
 firebase-admin
 python-dotenv
 pydantic
+twilio
+uvicorn

@@ -32,7 +32,7 @@ export function ReAuthModal({ onClose }: ReAuthModalProps) {
       await reauthenticateWithCredential(currentUser, credential);
 
       // Auth passed — now check role
-      if (role === "responder" || role === "admin") {
+      if (role === "responder") {
         onClose();
         nav("/responder");
       } else {

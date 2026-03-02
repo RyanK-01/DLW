@@ -103,7 +103,7 @@ def main() -> int:
     load_dotenv(backend_dir / ".env")
 
     parser = argparse.ArgumentParser(description="Prepare YOLOv8 and MobileNetV2 model files")
-    parser.add_argument("--yolo-weights", default="yolov8n.pt")
+    parser.add_argument("--yolo-weights", default="models/yolov8n.pt")
     parser.add_argument("--weapon-weights", default=os.getenv("WEAPON_WEIGHTS"))
     parser.add_argument("--mobilenet-model", default=os.getenv("MOBILENET_MODEL_PATH"))
     parser.add_argument("--mobilenet-model-url", default=None)

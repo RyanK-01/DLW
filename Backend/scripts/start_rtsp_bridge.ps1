@@ -4,7 +4,8 @@ param(
 
     [int]$HttpPort = 8080,
     [int]$RtspPort = 8554,
-    [string]$StreamName = "cam_01"
+    [string]$StreamName = "cam_01",
+    [int]$Fps = 10
 )
 
 $ffmpeg = Get-Command ffmpeg -ErrorAction SilentlyContinue
@@ -20,16 +21,17 @@ Write-Host "Starting RTSP bridge..."
 Write-Host "Input : $inputUrl"
 Write-Host "Output: $outputUrl"
 
-& ffmpeg `
-    -fflags +genpts+discardcorrupt `
-    -use_wallclock_as_timestamps 1 `
-    -f mjpeg -i $inputUrl `
-    -an `
-    -c:v libx264 `
-    -preset veryfast `
-    -tune zerolatency `
-    -pix_fmt yuv420p `
-    -g 30 `
-    -f rtsp `
-    -rtsp_transport tcp `
+& ffmpeg 
+    -f mjpeg -i "$inputUrl" 
+    -vf "fps=10,scale=960:-2" 
+    -an 
+    -c:v libx264 
+    -preset ultrafast 
+    -tune zerolatency 
+    -profile:v baseline 
+    -level 3.1 
+    -g 20 
+    -x264-params "bframes=0:scenecut=0:ref=1:keyint=20:min-keyint=20" 
+    -f rtsp 
+    -rtsp_transport tcp 
     $outputUrl

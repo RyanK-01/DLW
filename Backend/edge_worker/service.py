@@ -68,7 +68,7 @@ class CameraConfig:
 @dataclass
 class EdgeInferenceConfig:
     backend_base_url: str = "http://127.0.0.1:8000"
-    yolo_weights: str = "yolov8n.pt"
+    yolo_weights: str = "models/yolov8n.pt"
     yolo_conf_threshold: float = 0.25
     yolo_device: str = "cpu"
 
@@ -1023,7 +1023,7 @@ def load_config_from_env() -> EdgeInferenceConfig:
 
     return EdgeInferenceConfig(
         backend_base_url=os.getenv("EDGE_BACKEND_URL", "http://127.0.0.1:8000"),
-        yolo_weights=resolve_backend_path(os.getenv("YOLO_WEIGHTS", "yolov8n.pt")) or "yolov8n.pt",
+        yolo_weights=resolve_backend_path(os.getenv("YOLO_WEIGHTS", "models/yolov8n.pt")) or "models/yolov8n.pt",
         yolo_conf_threshold=float(os.getenv("YOLO_CONF_THRESHOLD", "0.25")),
         yolo_device=os.getenv("YOLO_DEVICE", "cpu"),
         min_people_for_action=int(os.getenv("MIN_PEOPLE_FOR_ACTION", "2")),

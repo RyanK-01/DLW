@@ -13,7 +13,6 @@ export function LandingPage() {
   const nav = useNavigate();
   const { user, role, loading } = useAuth();
   const [tab, setTab] = useState<Tab>("login");
-
   // Login state
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPw, setLoginPw] = useState("");
@@ -88,15 +87,22 @@ export function LandingPage() {
   return (
     <div className="landing-root">
       {/* ── Hero ── */}
-      <div className="landing-hero">
+      <section className="landing-hero">
         <div className="landing-hero-inner">
           <div className="landing-logo">🛡️</div>
-          <h1 className="landing-title">Welcome to SafeWatch</h1>
+          <h1 className="landing-title">WELCOME TO SAFEWATCH</h1>
           <p className="landing-sub">
-            AI-powered incident detection &amp; real-time public safety advisories.
+            The art of keeping you safe with the constant update of incidents and emergencies.
           </p>
+
+          {/* Feature pills */}
+          <div className="landing-pills">
+            <span className="landing-pill">📡 Live Incident Feed</span>
+            <span className="landing-pill">🔔 Real-Time Advisories</span>
+            <span className="landing-pill">🤝 Community Safety</span>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* ── Auth card ── */}
       <div className="landing-card-wrap">

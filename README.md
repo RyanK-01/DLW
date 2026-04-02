@@ -15,3 +15,5 @@ Unlike traditional surveillance systems that rely on continuous cloud streaming,
 - Offline-friendly architecture
 - Human-in-the-loop decision making
 - Scalable and low-cost deployment
+
+[Open `firebase.ts`](./frontend/src/firebase.ts)
